@@ -11,6 +11,7 @@ import { BlogModule } from './modules/blog/blog.module';
 import { BroadcastModule } from './modules/broadcast/broadcast.module';
 import { CalendarModule } from './modules/calendar/calendar.module';
 import { CommunityModule } from './modules/community/community.module';
+import { HackIssueModule } from './modules/hack-issue/hack-issue.module';
 import { ProjectModule } from './modules/project/project.module';
 import { SeederModule } from './modules/seeder/seeder.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -31,6 +32,7 @@ import { UserModule } from './modules/user/user.module';
     BroadcastModule,
     BlogModule,
     SeederModule,
+    HackIssueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
