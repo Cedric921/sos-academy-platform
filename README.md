@@ -64,7 +64,7 @@ pnpm setup:admin-env && pnpm dev:admin
 ### Prerequisites
 
 - Node.js 20+
-- MongoDB (local or cloud)
+- MongoDB: [Docker](https://docs.docker.com/get-docker/) (recommended, see below), a local install, or a cloud cluster
 - SendGrid account (for emails)
 
 ### Environment Setup
@@ -148,8 +148,8 @@ BASE_SERVER_URL=http://localhost:4200
 # Install dependencies
 pnpm install
 
-# Start MongoDB (if running locally)
-mongod
+# Start MongoDB + Mongo Express with Docker
+pnpm db:up
 
 # Start backend server
 pnpm start
@@ -158,6 +158,24 @@ pnpm start
 This will start the backend:
 - Backend: http://localhost:4200
 - API Documentation: http://localhost:4200/api/docs
+
+#### Local database with Docker
+
+`docker-compose.yml` runs the database the backend expects by default (`MONGODB_URI=mongodb://localhost:27017/sos-academy`), so no `.env` change is needed:
+
+| Service | URL |
+|---|---|
+| MongoDB | `mongodb://localhost:27017` |
+| Mongo Express (web GUI) | http://localhost:8081 |
+
+```sh
+pnpm db:up     # start MongoDB and Mongo Express in the background
+pnpm db:logs   # follow their logs
+pnpm db:down   # stop them (data is kept)
+docker compose down -v   # stop and delete the data volume
+```
+
+Both services only listen on `localhost`. If you already run a local `mongod` on port 27017, stop it first (or use it instead of Docker).
 
 #### Admin Panel
 
@@ -335,7 +353,7 @@ The platform includes a **smart auto-seeding system** that automatically populat
 
 ### Automatic Seeding
 
-**Both Local & Docker**: The database automatically checks and seeds itself when the application starts up if it's empty. No manual intervention needed!
+The database automatically checks and seeds itself when the application starts up if it's empty. No manual intervention needed!
 
 **How it works:**
 1. Application starts and listens on the configured port
@@ -375,15 +393,6 @@ npx nx run server:seed:reset
 npx nx run server:seed:status
 ```
 
-### Docker Manual Seeding (if needed)
-
-```sh
-# Seed communities
-docker-compose exec backend node seed-docker.js seed
-
-# Check status
-docker-compose exec backend node seed-docker.js status
-```
 
 ### Seeder Endpoints (via API)
 

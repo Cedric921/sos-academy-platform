@@ -1,0 +1,37 @@
+# Local development database: MongoDB + Mongo Express (web GUI).
+# Start with `pnpm db:up`, stop with `pnpm db:down` (data is kept in the `mongodb-data` volume).
+# Both services only listen on localhost.
+name: sos-academy
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: sos-academy-mongodb
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: sos-academy-mongo-express
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:8081:8081'
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      # No login prompt: the GUI is only reachable from this machine
+      ME_CONFIG_BASICAUTH: 'false'
+
+volumes:
+  mongodb-data:

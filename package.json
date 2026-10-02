@@ -4,6 +4,9 @@
   "license": "MIT",
   "packageManager": "pnpm@10.18.1",
   "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f",
     "dev": "turbo run dev --filter=server",
     "dev:backend": "turbo run dev --filter=server",
     "dev:admin": "turbo run dev --filter=admin",
